@@ -3,6 +3,7 @@
 #include <math.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <string.h>
 
 #define GRAVITY_CONSTANT 9.8
 #define WIDTH 200
@@ -12,14 +13,17 @@
 #define TANK_SCREEN_DELAY 30000
 #define HITRANGE 2
 
-#define KNRM  "\x1B[0m"
-#define KRED  "\x1B[31m"
-#define KGRN  "\x1B[32m"
-#define KYEL  "\x1B[33m"
-#define KBLU  "\x1B[34m"
-#define KMAG  "\x1B[35m"
-#define KCYN  "\x1B[36m"
-#define KWHT  "\x1B[37m"
+#define T1_X 10
+#define T2_X 189
+
+#define KNRM  "\x1B[0m#"
+#define KRED  "\x1B[31m#"
+#define KGRN  "\x1B[32m#"
+#define KYEL  "\x1B[33m#"
+#define KBLU  "\x1B[34m#"
+#define KMAG  "\x1B[35m#"
+#define KCYN  "\x1B[36m#"
+#define KWHT  "\x1B[37m#"
 
 typedef struct bullet_data_values{
     int init_y;
@@ -105,7 +109,7 @@ void ask_move_command(TANK* tank, char* matrix){
 bool is_valid_move_command(TANK tank, char* matrix, int command){
     int temp_tank_coordinate = 0;
     temp_tank_coordinate = tank.x + command * 1;
-    printf("ttc %d\n", temp_tank_coordinate);
+    // printf("ttc %d\n", temp_tank_coordinate);
     
     
     if (abs(command) <= 5){
@@ -127,8 +131,9 @@ void ask_command(TANK* tank_array, TANK* tank, char* matrix){
         printf("1. Move Tank\n");
         printf("2. Shoot\n");
         printf("3. Pass this turn\n");
+        printf("4. Exit program\n");
         scanf("%d", &command);
-    }while(!((command >= 1) && (command <= 3)));
+    }while(!((command >= 1) && (command <= 4)));
     
     switch(command){
         case 1:
@@ -151,6 +156,11 @@ void ask_command(TANK* tank_array, TANK* tank, char* matrix){
             // to avoid that, I added 3 more lines and recreate the tank.
             
         }
+        case 3:
+            break;
+        case 4:
+            exit(0);
+            break;
         default:
             break;
     }
@@ -196,12 +206,12 @@ void init_game(void){ // returns winner id
     set_map(matrix);
     
     tank_array[0].health = 3;
-    tank_array[0].x = 10;
+    tank_array[0].x = T1_X;
     tank_array[0].y = 10;
     tank_array[0].color = 7;
     
     tank_array[1].health = 3;
-    tank_array[1].x = 189;
+    tank_array[1].x = T2_X;
     tank_array[1].y = 10;
     tank_array[1].color = 8;
     
@@ -325,32 +335,44 @@ void set_pixel_color(char pixel_value){
     switch(pixel_value){
         case 0: // Case for Sky _ cyan (0)
         {
-            printf("%s", KCYN);
+            printf(KCYN);
+            //fwrite(KCYN, 1, 6, stdout);
+            // write(0, KCYN, 6);
             break;
         }
         case 1: // Case for Ground _ green (1)
         {
-            printf("%s", KGRN);
+            printf(KGRN);
+            //fwrite(KGRN, 1, 6, stdout);
+            // write(0, KGRN, 6);
             break;
         }
         case 2: // Case for bullet _ red (2)
         {
-            printf("%s", KRED);
+            printf(KRED);
+            //fwrite(KRED, 1, 6, stdout);
+            // write(0, KRED, 6);
             break;
         }
         case 7: // Case for Tank 1 _ blue (7)
         {
-            printf("%s", KBLU);
+            printf(KBLU);
+            //fwrite(KBLU, 1, 6, stdout);
+            // write(0, KBLU, 6);
             break;
         }
         case 8: // Case for Tank 1 _ blue (7)
         {
-            printf("%s", KMAG);
+            printf(KMAG);
+            //fwrite(KMAG, 1, 6, stdout);
+            // write(0, KMAG, 6);
             break;
         }
         default: // Case for default _ white (*)
         {
-            printf("%s", KWHT);
+            printf(KWHT);
+            //fwrite(KWHT, 1, 6, stdout);
+            // write(0, KWHT, 6);
             break;
         }
     }
@@ -365,8 +387,9 @@ void draw_screen(char* matrix){
     for (int i = HEIGHT ; i > 0 ; i--){
         for (int j = 0 ; j < WIDTH ; j++){
             set_pixel_color(matrix[indexer(i, j)]);
-            printf("%d", matrix[indexer(i, j)]);
+            // write("%d"matrix[indexer(i, j)]);
         }
+        // printf("\n");
         printf("\n");
     }
     printf("%s", KWHT);
